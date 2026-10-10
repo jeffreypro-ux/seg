@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自学英语 · 把自学英语变简单</title>
+<style>
+/* ================= 设计系统 ================= */
+:root{
+  --bg:#fafaf9;
+  --card:#ffffff;
+  --ink:#1c1917;
+  --ink-2:#44403c;
+  --muted:#78716c;
+  --faint:#a8a29e;
+  --line:#e7e5e4;
+  --line-2:#d6d3d1;
+  --acc:#4f46e5;
+  --acc-soft:#eef2ff;
+  --green:#059669;
+  --green-soft:#ecfdf5;
+  --amber:#d97706;
+  --amber-soft:#fffbeb;
+  --r:12px;
+  --sh-sm:0 1px 2px rgba(28,25,23,.05);
+  --sh-md:0 8px 24px rgba(28,25,23,.08);
+  --sh-lg:0 20px 50px rgba(28,25,23,.12);
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+  --num:"SF Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+h1,h2,h3{letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.h2{font-size:clamp(26px,3.6vw,38px);font-weight:700;line-height:1.25;letter-spacing:-.02em}
+.lead{color:var(--muted);font-size:16px;margin-top:14px;max-width:520px}
+.sec{padding:104px 0}
+
+/* 按钮 */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:10px;
+  padding:12px 22px;font-size:14.5px;font-weight:600;transition:.18s;white-space:nowrap;
+}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#292524}
+.btn-line{background:var(--card);color:var(--ink);border-color:var(--line-2)}
+.btn-line:hover{border-color:var(--ink)}
+.btn-ind{background:var(--acc);color:#fff}
+.btn-ind:hover{background:#4338ca}
+
+/* 通用卡片 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm)}
+
+/* 入场动效 */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv.on{opacity:1;transform:none}
+
+/* ================= 导航 ================= */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:64px;transition:.25s;
+}
+.nav.solid{background:rgba(250,250,249,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16.5px;letter-spacing:-.01em}
+.brand .mk{
+  width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;
+  display:grid;place-items:center;font-size:13px;font-weight:800;
+}
+.menu{display:flex;gap:6px}
+.menu a{padding:8px 14px;border-radius:8px;font-size:14px;color:var(--muted);transition:.15s}
+.menu a:hover{color:var(--ink);background:rgba(28,25,23,.05)}
+.nav .btn{padding:9px 18px}
+.burger{display:none;border:1px solid var(--line-2);background:var(--card);border-radius:8px;font-size:16px;color:var(--ink);padding:6px 11px}
+@media(max-width:860px){
+  .menu{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:10px;box-shadow:var(--sh-md)}
+  .menu.open{display:flex}
+  .menu a{padding:12px 16px;font-size:15px}
+  .burger{display:block}
+  .nav .btn{display:none}
+}
+
+/* ================= Hero ================= */
+.hero{padding:168px 0 72px;border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:72px;align-items:center}
+.hero .eyebrow{margin-bottom:18px;display:inline-flex;align-items:center;gap:8px}
+.hero .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.hero h1{font-size:clamp(38px,5.2vw,58px);font-weight:800;line-height:1.16;letter-spacing:-.03em}
+.hero .sub{color:var(--muted);font-size:17px;max-width:480px;margin:22px 0 32px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.trust{display:flex;align-items:center;gap:14px;margin-top:44px}
+.avas{display:flex}
+.avas i{
+  width:32px;height:32px;border-radius:50%;border:2px solid var(--bg);margin-left:-8px;
+  display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;color:#fff;
+}
+.avas i:first-child{margin-left:0}
+.avas i:nth-child(1){background:#4f46e5}.avas i:nth-child(2){background:#0d9488}
+.avas i:nth-child(3){background:#c2410c}.avas i:nth-child(4){background:#be185d}
+.avas i:nth-child(5){background:#57534e}
+.trust p{font-size:13px;color:var(--muted)}
+.trust p b{color:var(--ink)}
+
+/* 右侧学习卡 */
+.study{padding:28px;box-shadow:var(--sh-md);position:relative}
+.study .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.study .tag{font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--acc);text-transform:uppercase}
+.study .live{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.study .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.study h3{font-size:18px;font-weight:700}
+.study .course-sub{font-size:13px;color:var(--muted);margin:3px 0 18px}
+.pbar{height:7px;border-radius:4px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.pbar b{display:block;height:100%;width:76%;background:var(--acc);border-radius:4px}
+.pbar-lab{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin:8px 0 18px;font-family:var(--num)}
+.word-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.word-row span{
+  font-family:var(--num);font-size:12px;padding:6px 12px;border-radius:8px;
+  background:var(--acc-soft);color:var(--acc);font-weight:600;
+}
+.word-row span i{font-style:normal;color:#818cf8;margin-left:6px;font-weight:400}
+.study .btn{width:100%;justify-content:center}
+.study-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+.study-stats div{text-align:center}
+.study-stats div+div{border-left:1px solid var(--line)}
+.study-stats .v{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.study-stats .v small{font-size:12px;color:var(--muted);font-weight:500}
+.study-stats .k{font-size:11.5px;color:var(--muted);margin-top:1px}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:48px}}
+
+/* Logo 墙 */
+.logos{padding:36px 0 8px}
+.logos p{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:center;margin-bottom:22px}
+.logo-row{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+.logo-track{display:flex;gap:72px;width:max-content;animation:slide 32s linear infinite}
+.logo-track span{font-size:15px;font-weight:600;color:var(--faint);white-space:nowrap;letter-spacing:.02em}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ================= 四步方法 ================= */
+.m-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:52px}
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.m-card{padding:26px 24px;transition:box-shadow .25s,transform .25s;position:relative}
+.m-card:hover{box-shadow:var(--sh-md);transform:translateY(-3px)}
+.m-card .no{font-family:var(--num);font-size:12px;font-weight:700;color:var(--faint);letter-spacing:.1em}
+.m-card .ic{
+  width:40px;height:40px;border-radius:10px;background:var(--acc-soft);color:var(--acc);
+  display:grid;place-items:center;margin:16px 0 14px;
+}
+.m-card h3{font-size:16.5px;font-weight:700;margin-bottom:6px}
+.m-card p{font-size:13.5px;color:var(--muted)}
+@media(max-width:960px){.m-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.m-grid{grid-template-columns:1fr}}
+
+/* ================= 课程 ================= */
+.c-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:48px}
+.c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.c-item{padding:26px 24px;transition:box-shadow .25s,transform .25s,border-color .25s;display:flex;flex-direction:column}
+.c-item:hover{box-shadow:var(--sh-md);transform:translateY(-3px);border-color:var(--line-2)}
+.c-item .t{display:flex;justify-content:space-between;align-items:center}
+.c-item .tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.c-item .lvl{font-size:11px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.c-item h3{font-size:17.5px;font-weight:700;margin:14px 0 6px}
+.c-item p{font-size:13.5px;color:var(--muted);flex:1}
+.c-item .m{display:flex;gap:14px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);font-family:var(--num)}
+.c-item .m b{color:var(--ink);font-weight:600}
+@media(max-width:920px){.c-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.c-grid{grid-template-columns:1fr}}
+
+/* ================= 数据 ================= */
+.d-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:64px;margin-top:56px;align-items:start}
+.big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.big3{padding:0;background:none;border:none;box-shadow:none}
+.big3>div{padding:20px 16px}
+.big3 .v{font-size:24px;font-weight:800;letter-spacing:-.01em}
+.big3 .v small{font-size:13px;color:var(--muted);font-weight:500}
+.big3 .k{font-size:12px;color:var(--muted);margin-top:2px}
+.signin{display:flex;align-items:center;gap:14px;padding:18px 20px}
+.signin .ok-ic{
+  flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:var(--green-soft);
+  color:var(--green);display:grid;place-items:center;
+}
+.signin b{display:block;font-size:14.5px}
+.signin span{font-size:12.5px;color:var(--muted)}
+.d-right h4{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.hm{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;gap:4px;margin-bottom:36px}
+.hm i{width:100%;aspect-ratio:1;border-radius:3px;background:#f0efed;border:1px solid var(--line)}
+.hm i.a{background:#e0e7ff;border-color:#c7d2fe}
+.hm i.b{background:#a5b4fc;border-color:#a5b4fc}
+.hm i.c{background:#6366f1;border-color:#6366f1}
+.hm i.d{background:#312e81;border-color:#312e81}
+.tl{border-left:2px solid var(--line);margin-left:5px;padding:0 0 22px 22px;position:relative}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:"";position:absolute;left:-5.5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
+.tl b{font-size:14.5px}
+.tl span{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+@media(max-width:900px){.d-grid{grid-template-columns:1fr}}
+
+/* ================= 机构 ================= */
+.e-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:60px;align-items:center}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:34px}
+.f-item{padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.f-item .fi{
+  flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:var(--acc-soft);color:var(--acc);
+  display:grid;place-items:center;
+}
+.f-item b{font-size:14px;display:block}
+.f-item p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.board{border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-lg)}
+.b-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+.b-head .dt{display:flex;gap:6px}
+.b-head .dt i{width:10px;height:10px;border-radius:50%;background:var(--line-2)}
+.b-head .url{flex:1;text-align:center;border-radius:7px;padding:5px 10px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);font-family:var(--num)}
+.b-body{padding:20px 22px}
+.b-body h4{font-size:14px;font-weight:700}
+.b-body .sub{font-size:12px;color:var(--muted);margin:2px 0 6px;font-family:var(--num)}
+.row{display:grid;grid-template-columns:1fr auto;gap:3px 16px;padding:13px 0;border-top:1px dashed var(--line);align-items:center}
+.row:first-of-type{border-top:none}
+.row .n{font-weight:600;font-size:14px}
+.row .t{font-size:11.5px;color:var(--muted);font-family:var(--num)}
+.row .bar{grid-column:1;height:6px;border-radius:3px;background:var(--bg);border:1px solid var(--line);overflow:hidden;margin-top:7px}
+.row .bar b{display:block;height:100%;background:var(--acc);border-radius:3px}
+.row .pc{grid-column:2;grid-row:1/3;font-size:18px;font-weight:800;align-self:center;font-family:var(--num)}
+.row.star .pc{color:var(--acc)}
+@media(max-width:900px){.e-grid{grid-template-columns:1fr}}
+
+/* ================= CTA ================= */
+.cta{text-align:center;padding:110px 0}
+.cta .h2{font-size:clamp(30px,4.6vw,48px)}
+.cta .btns{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+
+/* ================= 页脚 ================= */
+footer{border-top:1px solid var(--line);padding:56px 0 28px;color:var(--muted);font-size:13.5px;background:var(--card)}
+.f-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px}
+.f-top h5{color:var(--ink);font-size:13.5px;font-weight:600;margin-bottom:12px}
+.f-top a{display:block;padding:3px 0;color:var(--muted)}
+.f-top a:hover{color:var(--ink)}
+.f-logo{display:flex;align-items:center;gap:9px;color:var(--ink);font-weight:700;font-size:15.5px;margin-bottom:10px}
+.f-logo .mk{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.copy{border-top:1px solid var(--line);padding-top:22px;text-align:center;font-size:12.5px;color:var(--faint)}
+@media(max-width:800px){.f-top{grid-template-columns:1fr 1fr}}
+
+/* ================= 液态玻璃 ================= */
+.tint{position:fixed;border-radius:50%;filter:blur(100px);z-index:0;pointer-events:none}
+.tint.t1{width:560px;height:560px;background:#c7d2fe;top:-180px;left:-140px;opacity:.55}
+.tint.t2{width:460px;height:460px;background:#99f6e4;top:34%;right:-160px;opacity:.42}
+.tint.t3{width:420px;height:420px;background:#fde68a;bottom:-160px;left:22%;opacity:.32}
+main,footer{position:relative;z-index:1}
+.nav{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.62));backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.8);box-shadow:0 4px 24px rgba(28,25,23,.05)}
+.card,.study,.c-item,.m-card,.f-item,.board,.signin{
+  background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.56));
+  backdrop-filter:blur(22px) saturate(165%);
+  -webkit-backdrop-filter:blur(22px) saturate(165%);
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -8px 16px rgba(255,255,255,.25),0 12px 34px rgba(28,25,23,.09);
+  border-radius:16px;
+}
+.c-item:hover,.m-card:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 44px rgba(28,25,23,.14)}
+.hero .study{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -8px 16px rgba(255,255,255,.25),0 24px 60px rgba(28,25,23,.14)}
+.hero .word-row span{
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);
+  backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+.btn-line{background:rgba(255,255,255,.55);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border-color:rgba(255,255,255,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+</style>
+</head>
+<body>
+<div class="tint t1"></div><div class="tint t2"></div><div class="tint t3"></div>
+
+<!-- ============ 导航 ============ -->
+<nav class="nav" id="nav">
+  <a class="brand" href="index.html"><span class="mk">S</span>自学英语</a>
+  <div class="menu" id="menu">
+    <a href="quiz.html">能力测评</a>
+    <a href="index.html#method">学习路径</a>
+    <a href="market.html">课程市集</a>
+    <a href="learn.html">每日学习</a>
+    <a href="index.html#edu">学校与机构</a>
+  </div>
+  <button class="burger" id="burger" aria-label="菜单">☰</button>
+  <button class="btn btn-dark" onclick="location.href='quiz.html'">免费测词汇量</button>
+</nav>
+
+<main>
+<!-- ============ Hero ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="rv on">
+        <span class="eyebrow">Self-Study English System</span>
+        <h1>不靠自律，靠系统<br>把自学英语变简单</h1>
+        <p class="sub">每天 20 分钟，按你的词汇量定制学习路径。测评、规划、打卡、复习，一套系统跑完，不再从零开始。</p>
+        <div class="ctas">
+          <button class="btn btn-dark" onclick="location.href='quiz.html'">2 分钟测出词汇量 →</button>
+          <button class="btn btn-line" onclick="location.href='market.html'">浏览课程市集</button>
+        </div>
+        <div class="trust">
+          <div class="avas"><i>L</i><i>W</i><i>C</i><i>Z</i><i>+</i></div>
+          <p>已获得 <b>1,200,000+</b> 自学者信任</p>
+        </div>
+      </div>
+
+      <div class="study card rv on">
+        <div class="top">
+          <span class="tag">Lesson 06</span>
+          <span class="live">正在学习</span>
+        </div>
+        <h3>高考考纲 3500 词</h3>
+        <div class="course-sub">今日 10 个新词 · 四站循环</div>
+        <div class="pbar"><b></b></div>
+        <div class="pbar-lab"><span>PROGRESS</span><span>76%</span></div>
+        <div class="word-row">
+          <span>endeavor<i>努力</i></span><span>horizon<i>地平线</i></span>
+          <span>wisdom<i>智慧</i></span><span>persist<i>坚持</i></span>
+        </div>
+        <button class="btn btn-ind" onclick="location.href='learn.html'">继续今日学习</button>
+        <div class="study-stats">
+          <div><div class="v">42</div><div class="k">连续天数</div></div>
+          <div><div class="v">1,680</div><div class="k">掌握单词</div></div>
+          <div><div class="v">92<small>%</small></div><div class="k">近30天正确率</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="logos">
+    <div class="wrap">
+      <p>受到这些平台学习者的一致选择</p>
+    </div>
+    <div class="logo-row"><div class="logo-track" id="logoTrack"></div></div>
+  </div>
+</header>
+
+<!-- ============ 四步方法 ============ -->
+<section class="sec" id="method">
+  <div class="wrap">
+    <div class="m-head rv">
+      <div>
+        <span class="eyebrow">Learning Path</span>
+        <h2 class="h2" style="margin-top:12px">一个单词，走完四站<br>才算学会</h2>
+      </div>
+      <button class="btn btn-line" onclick="location.href='learn.html'">体验今日学习 →</button>
+    </div>
+    <div class="m-grid">
+      <div class="m-card card rv">
+        <span class="no">01</span>
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></div>
+        <h3>英译汉 · 认得</h3>
+        <p>看到英文选出正确释义。多词性的词按词性分开考，一个都不放过。</p>
+      </div>
+      <div class="m-card card rv">
+        <span class="no">02</span>
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <h3>拼写 · 写得出</h3>
+        <p>听发音逐个字母拼出来。双写、不发音字母最容易错的地方，错一次就记住。</p>
+      </div>
+      <div class="m-card card rv">
+        <span class="no">03</span>
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg></div>
+        <h3>汉译英 · 想得起</h3>
+        <p>看到中文写出单词——这是考场上真正要用的方向，也是多数人最薄弱的一站。</p>
+      </div>
+      <div class="m-card card rv">
+        <span class="no">04</span>
+        <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg></div>
+        <h3>错题本 · 复习到对</h3>
+        <p>任何一站答错自动进错题本；复习时一次答对才移出，不糊里糊涂地过去。</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ 课程 ============ -->
+<section class="sec" id="courses" style="padding-top:0">
+  <div class="wrap">
+    <div class="c-head rv">
+      <div>
+        <span class="eyebrow">Course Market</span>
+        <h2 class="h2" style="margin-top:12px">从考纲词汇，到整套真题</h2>
+        <p class="lead">40 余套课程包，按内容分成六类。加入后进度一直保留，随时回来接着学。</p>
+      </div>
+      <button class="btn btn-dark" onclick="location.href='market.html'">去课程市集 →</button>
+    </div>
+    <div class="c-grid">
+      <div class="c-item card rv"><div class="t"><span class="tag">考纲词汇</span><span class="lvl">高中</span></div><h3>高考考纲 3500 词</h3><p>按考频排序，先背最常考的。四站循环，直到每个词都站站通过。</p><div class="m"><span>48 课</span><b>约 4 个月</b></div></div>
+      <div class="c-item card rv"><div class="t"><span class="tag">真题训练</span><span class="lvl">高中</span></div><h3>十年真题词汇</h3><p>考过什么就学什么。每词标注出现年份与频次，不做无用功。</p><div class="m"><span>32 课</span><b>约 3 个月</b></div></div>
+      <div class="c-item card rv"><div class="t"><span class="tag">长难句</span><span class="lvl">高中</span></div><h3>长难句拆解 30 讲</h3><p>每天一句真题长难句，划主干、拆从句，阅读肉眼可见地涨。</p><div class="m"><span>30 课</span><b>约 1 个月</b></div></div>
+      <div class="c-item card rv"><div class="t"><span class="tag">完形填空</span><span class="lvl">高中</span></div><h3>完形高频词</h3><p>完形选项里最爱考的一词多义和近义词辨析，集中突破。</p><div class="m"><span>24 课</span><b>约 3 周</b></div></div>
+      <div class="c-item card rv"><div class="t"><span class="tag">听力口语</span><span class="lvl">通用</span></div><h3>听力场景词</h3><p>校园、旅行、购物……按场景记单词，听音反应速度翻倍。</p><div class="m"><span>20 课</span><b>约 2 周</b></div></div>
+      <div class="c-item card rv"><div class="t"><span class="tag">写作</span><span class="lvl">高中</span></div><h3>写作高级替换词</h3><p>good → remarkable，把作文里的低级词系统性升级一档。</p><div class="m"><span>16 课</span><b>约 2 周</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 数据 ============ -->
+<section class="sec" id="data" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow">Daily Progress</span>
+    <h2 class="h2" style="margin-top:12px">每天一点点<br>攒成看得见的进步</h2>
+    <p class="lead">打开就是今天该学的那一节。签到、学习热力图和连续天数，把坚持变成看得见的事。</p>
+
+    <div class="d-grid">
+      <div class="rv">
+        <div class="big3">
+          <div class="card"><div class="v" data-v="42" data-s="">0</div><div class="k">连续签到（天）</div></div>
+          <div class="card"><div class="v" data-v="1680" data-s="">0</div><div class="k">累计掌握单词</div></div>
+          <div class="card"><div class="v" data-v="92" data-s="%">0</div><div class="k">近 30 天正确率</div></div>
+        </div>
+        <div class="signin card">
+          <div class="ok-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div><b>今日已打卡</b><span>又往前走了一步，明天继续。</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <h4>近 20 周学习热力图</h4>
+        <div class="hm" id="hm"></div>
+        <div class="tl"><b>早读后的十分钟</b><span>新学 10 个词 · 第一、二站</span></div>
+        <div class="tl"><b>碎片时间</b><span>清空错题本 · 复习到对</span></div>
+        <div class="tl"><b>晚自习最后一节</b><span>汉译英听写 · 当日清零</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 机构 ============ -->
+<section class="sec" id="edu" style="padding-top:0">
+  <div class="wrap">
+    <div class="e-grid">
+      <div class="rv">
+        <span class="eyebrow">For Schools</span>
+        <h2 class="h2" style="margin-top:12px">老师布置任务<br>进度一眼看清</h2>
+        <p class="lead">为学校和培训机构提供班级管理与课程授权。老师在后台布置任务、查看完成情况，学生用自己的账号完成学习。</p>
+        <div class="f-grid">
+          <div class="f-item card"><div class="fi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div><div><b>班级与学生</b><p>按班级建档，学生账号统一开通</p></div></div>
+          <div class="f-item card"><div class="fi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><div><b>布置学习任务</b><p>指定课节与考法，设置达标正确率</p></div></div>
+          <div class="f-item card"><div class="fi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 21 2m-4 2 3 3"/></svg></div><div><b>课程授权</b><p>按名额为学生开通课程包</p></div></div>
+          <div class="f-item card"><div class="fi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="4"/></svg></div><div><b>完成情况</b><p>谁学了、学到哪、正确率多少，随时查看</p></div></div>
+        </div>
+      </div>
+      <div class="board rv">
+        <div class="b-head">
+          <span class="dt"><i></i><i></i><i></i></span>
+          <span class="url">edu.selfstudy-en.com/tasks</span>
+        </div>
+        <div class="b-body">
+          <h4>本周任务</h4>
+          <div class="sub">4 个班级 · 168 名学生</div>
+          <div class="row"><div class="n">高一（3）班</div><div class="t">第 6 课 · 英译汉 · 完成 38 / 42</div><div class="bar"><b style="width:91%"></b></div><div class="pc">91%</div></div>
+          <div class="row"><div class="n">高一（5）班</div><div class="t">第 6 课 · 拼写 · 完成 29 / 40</div><div class="bar"><b style="width:84%"></b></div><div class="pc">84%</div></div>
+          <div class="row"><div class="n">高二（1）班</div><div class="t">长难句 · 第 2 课 · 完成 33 / 45</div><div class="bar"><b style="width:78%"></b></div><div class="pc">78%</div></div>
+          <div class="row star"><div class="n">高二（4）班</div><div class="t">完形高频词 · 第 9 课 · 完成 41 / 41</div><div class="bar"><b style="width:100%"></b></div><div class="pc">95%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta">
+  <div class="wrap">
+    <span class="eyebrow rv">Start Today</span>
+    <h2 class="h2 rv" style="margin-top:14px">今天，就走第一步</h2>
+    <div class="btns rv">
+      <button class="btn btn-dark" onclick="location.href='quiz.html'">2 分钟测出词汇量 →</button>
+      <button class="btn btn-line" onclick="location.href='learn.html'">开始今日学习</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ 页脚 ============ -->
+<footer>
+  <div class="wrap">
+    <div class="f-top">
+      <div>
+        <div class="f-logo"><span class="mk">S</span>自学英语</div>
+        <p>不靠自律，靠系统。<br>Self-study, systemized.</p>
+      </div>
+      <div>
+        <h5>产品</h5>
+        <a href="quiz.html">能力测评</a><a href="index.html#method">学习路径</a><a href="market.html">课程市集</a><a href="learn.html">每日学习</a>
+      </div>
+      <div>
+        <h5>教育合作</h5>
+        <a href="index.html#edu">学校与机构</a><a href="#">机构后台</a><a href="#">联系合作</a>
+      </div>
+      <div>
+        <h5>关于</h5>
+        <a href="#">关于我们</a><a href="#">用户协议</a><a href="#">隐私政策</a>
+      </div>
+    </div>
+    <div class="copy">© 2026 自学英语 · 本页面为复刻演示</div>
+  </div>
+</footer>
+
+<script>
+/* 导航 */
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 24), { passive: true });
+
+/* 滚动渐入 */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+}), { threshold: .1 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+setTimeout(() => document.querySelectorAll('.rv:not(.on)').forEach(el => el.classList.add('on')), 3200);
+
+/* 汉堡菜单 */
+const burger = document.getElementById('burger'), menu = document.getElementById('menu');
+burger.onclick = () => menu.classList.toggle('open');
+menu.onclick = e => { if (e.target.tagName === 'A') menu.classList.remove('open'); };
+
+/* Logo 墙 */
+const LOGOS = ['网易云课堂','腾讯课堂','学堂在线','沪江网校','猿辅导','作业帮','流利说','多邻国','百词斩','新东方在线'];
+const lt = document.getElementById('logoTrack');
+const lh = LOGOS.map(l => `<span>${l}</span>`).join('');
+lt.innerHTML = lh + lh;
+
+/* 热力图 */
+const hm = document.getElementById('hm');
+let s = 7;
+const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+for (let w = 0; w < 20; w++) for (let d = 0; d < 7; d++) {
+  const c = document.createElement('i');
+  if (rnd() > .18) c.className = 'abcd'[Math.floor(rnd() * 4)];
+  hm.appendChild(c);
+}
+
+/* 数字滚动 */
+const nio = new IntersectionObserver(es => {
+  if (!es[0].isIntersecting) return;
+  nio.disconnect();
+  document.querySelectorAll('.big3 .v').forEach(el => {
+    const target = +el.dataset.v, suf = el.dataset.s, t0 = performance.now();
+    (function tick(t) {
+      const p = Math.min((t - t0) / 1300, 1), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * e).toLocaleString() + suf;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
+}, { threshold: .4 });
+nio.observe(document.querySelector('.big3'));
+</script>
+</body>
+</html>

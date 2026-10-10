@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日学习 · 自学英语</title>
+<style>
+:root{
+  --bg:#fafaf9;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--faint:#a8a29e;
+  --line:#e7e5e4;--line-2:#d6d3d1;--acc:#4f46e5;--acc-soft:#eef2ff;
+  --green:#059669;--green-soft:#ecfdf5;--rose:#e11d48;--rose-soft:#fff1f2;
+  --r:12px;--sh-sm:0 1px 2px rgba(28,25,23,.05);--sh-md:0 8px 24px rgba(28,25,23,.08);
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --num:"SF Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+h1,h2,h3{letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:620px;margin:0 auto;padding:0 22px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:12px 24px;font-size:14.5px;font-weight:600;transition:.18s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{background:#292524}
+.btn-line{background:var(--card);color:var(--ink);border-color:var(--line-2)}.btn-line:hover{border-color:var(--ink)}
+.btn-ind{background:var(--acc);color:#fff}.btn-ind:hover{background:#4338ca}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm)}
+
+/* 导航 */
+.nav{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:64px;background:rgba(250,250,249,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16.5px}
+.brand .mk{width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+.menu{display:flex;gap:6px}
+.menu a{padding:8px 14px;border-radius:8px;font-size:14px;color:var(--muted)}
+.menu a:hover{color:var(--ink);background:rgba(28,25,23,.05)}
+.menu a.cur{color:var(--ink);font-weight:600}
+.nav .btn{padding:9px 18px}
+.burger{display:none;border:1px solid var(--line-2);background:var(--card);border-radius:8px;font-size:16px;color:var(--ink);padding:6px 11px}
+@media(max-width:840px){
+  .menu{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:10px;box-shadow:var(--sh-md)}
+  .menu.open{display:flex}.menu a{padding:12px 16px;font-size:15px}.burger{display:block}
+  .nav .btn{display:none}
+}
+
+.page{padding:124px 0 80px;min-height:100vh}
+
+/* 今日卡 */
+.today{padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap;box-shadow:var(--sh-md)}
+.today h1{font-size:clamp(20px,3.2vw,26px);font-weight:800}
+.today .sub{color:var(--muted);font-size:12.5px;margin-top:3px;font-family:var(--num)}
+.streak{text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 22px;background:var(--acc-soft)}
+.streak .v{font-size:24px;font-weight:800;color:var(--acc)}
+.streak .k{font-size:10.5px;color:var(--muted);font-family:var(--num);letter-spacing:.12em}
+
+/* 步骤条 */
+.steps{display:flex;gap:6px;margin:22px 0}
+.steps div{flex:1;text-align:center;font-size:11px;color:var(--faint);padding-top:11px;position:relative;font-family:var(--num);letter-spacing:.04em;transition:.3s}
+.steps div::before{content:"";position:absolute;top:0;left:8%;right:8%;height:4px;border-radius:2px;background:var(--line)}
+.steps div.on{color:var(--ink);font-weight:700}
+.steps div.on::before{background:var(--acc)}
+.steps div.fin::before{background:var(--green)}
+
+/* 学习卡 */
+.q-card{padding:38px 36px;box-shadow:var(--sh-md)}
+#card.anim{animation:qIn .4s cubic-bezier(.2,.8,.3,1)}
+@keyframes qIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.q-tag{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);margin-bottom:10px;text-align:center}
+.q-word{font-size:clamp(30px,6.4vw,44px);font-weight:800;text-align:center;margin:4px 0 2px;letter-spacing:-.02em;animation:wordIn .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes wordIn{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:none}}
+.q-zh{text-align:center;color:var(--muted);font-size:13px;margin-bottom:26px;font-family:var(--num)}
+.opts{display:grid;gap:10px}
+.opt{
+  text-align:left;background:var(--card);border:1.5px solid var(--line-2);border-radius:10px;
+  padding:14px 18px;font-size:15px;color:var(--ink);transition:.15s;display:flex;justify-content:space-between;font-weight:500;
+}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--rose);background:var(--rose-soft);animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.spell-in{
+  width:100%;padding:15px 18px;font-size:19px;letter-spacing:.26em;font-family:var(--num);
+  border:1.5px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--ink);outline:none;text-align:center;
+}
+.spell-in:focus{border-color:var(--acc)}
+.spell-in.ok{border-color:var(--green);background:var(--green-soft)}
+.spell-in.bad{border-color:var(--rose);background:var(--rose-soft);animation:shake .4s}
+.hint{text-align:center;font-size:12.5px;color:var(--muted);margin-top:12px;letter-spacing:.28em;font-family:var(--num)}
+.fb{margin-top:14px;font-size:13.5px;text-align:center;min-height:24px}
+.fb.ok{color:var(--green)}.fb.bad{color:var(--rose)}
+.c-foot{display:flex;justify-content:space-between;align-items:center;margin-top:26px}
+.prog{font-size:12px;color:var(--muted);font-family:var(--num)}
+.prog b{color:var(--acc)}
+
+/* 完成 */
+.done-box{text-align:center}
+.done-box .seal{
+  width:64px;height:64px;border-radius:18px;background:var(--green-soft);color:var(--green);
+  display:grid;place-items:center;margin:0 auto 20px;animation:pop .5s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.done-box h2{font-size:clamp(22px,3.6vw,30px);font-weight:800;margin-bottom:8px}
+.done-box p{color:var(--muted);font-size:14.5px}
+.d-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:26px 0}
+.d-stats div{border:1px solid var(--line);border-radius:var(--r);padding:16px 8px;background:var(--bg)}
+.d-stats .v{font-size:22px;font-weight:800}
+.d-stats .v.hl{color:var(--acc)}
+.d-stats .k{font-size:11.5px;color:var(--muted);margin-top:2px}
+.d-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hide{display:none}
+
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;color:var(--faint);font-size:12.5px;background:var(--card)}
+</style>
+</head>
+<body>
+<div class="tint t1"></div><div class="tint t2"></div>
+
+<nav class="nav">
+  <a class="brand" href="index.html"><span class="mk">S</span>自学英语</a>
+  <div class="menu" id="menu">
+    <a href="quiz.html">能力测评</a>
+    <a href="index.html#method">学习路径</a>
+    <a href="market.html">课程市集</a>
+    <a href="learn.html" class="cur">每日学习</a>
+    <a href="index.html#edu">学校与机构</a>
+  </div>
+  <button class="burger" id="burger">☰</button>
+  <button class="btn btn-dark" onclick="location.href='market.html'">加课</button>
+</nav>
+
+<main class="page">
+  <div class="wrap">
+
+    <div class="today card">
+      <div>
+        <span class="eyebrow">Today</span>
+        <h1 style="margin-top:6px" id="dateLine">今天该学的一节</h1>
+        <div class="sub">高考考纲 3500 词 · LESSON 06 · 10 新词 × 四站</div>
+      </div>
+      <div class="streak"><div class="v" id="streakV">0</div><div class="k">DAY STREAK</div></div>
+    </div>
+
+    <div class="steps" id="stepsBar">
+      <div class="on">01 英译汉</div><div>02 拼写</div><div>03 汉译英</div><div>04 错题本</div>
+    </div>
+
+    <div class="card q-card" id="card">
+      <div class="q-tag" id="qTag"></div>
+      <div class="q-word" id="qWord"></div>
+      <div class="q-zh hide" id="qZh"></div>
+      <div class="opts" id="qOpts"></div>
+      <input class="spell-in hide" id="qInput" autocomplete="off" spellcheck="false">
+      <div class="hint hide" id="qHint"></div>
+      <div class="fb" id="qFb"></div>
+      <div class="c-foot">
+        <span class="prog" id="qProg"></span>
+        <button class="btn btn-ind" id="qNext" disabled>下一个 →</button>
+      </div>
+    </div>
+
+    <div class="card q-card done-box hide" id="doneBox">
+      <div class="seal"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h2>今日四站全部走完</h2>
+      <p>又往前走了一步。明天同一时间，继续。</p>
+      <div class="d-stats">
+        <div><div class="v" id="dNew">0</div><div class="k">新学单词</div></div>
+        <div><div class="v" id="dWrong">0</div><div class="k">攻克错题</div></div>
+        <div><div class="v hl" id="dAcc">0%</div><div class="k">今日正确率</div></div>
+      </div>
+      <div class="d-btns">
+        <button class="btn btn-dark" id="signBtn">今日打卡</button>
+        <button class="btn btn-line" onclick="location.href='market.html'">去课程市集加课 →</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>© 2026 自学英语 · 本页面为复刻演示</footer>
+
+<script>
+const WORDS = [
+  {en:'ambition', zh:'抱负'}, {en:'vivid', zh:'生动的'}, {en:'endeavor', zh:'努力'},
+  {en:'harmony', zh:'和谐'}, {en:'persist', zh:'坚持'}, {en:'bloom', zh:'开花'},
+  {en:'grateful', zh:'感激的'}, {en:'horizon', zh:'地平线'}, {en:'wisdom', zh:'智慧'},
+  {en:'sincere', zh:'真诚的'}
+];
+
+let stage = 0, wi = 0, locked = false, wrongs = [], attempts = 0, rights = 0;
+const $ = id => document.getElementById(id);
+
+/* 日期与打卡 */
+const today = new Date();
+$('dateLine').textContent = `${today.getMonth() + 1} 月 ${today.getDate()} 日 · 今天该学的一节`;
+let rec = JSON.parse(localStorage.getItem('se_checkin') || '{"streak":41,"last":""}');
+const key = today.toISOString().slice(0, 10);
+$('streakV').textContent = rec.streak + (rec.last === key ? 1 : 0);
+
+const STAGES = [
+  {tag:'Station 01 · Recognize', mode:'choice'},
+  {tag:'Station 02 · Spell', mode:'spell'},
+  {tag:'Station 03 · Recall', mode:'c2e'},
+  {tag:'Station 04 · Review', mode:'review'}
+];
+
+function setSteps() {
+  document.querySelectorAll('#stepsBar div').forEach((d, i) => {
+    d.className = i < stage ? 'fin' : i === stage ? 'on' : '';
+  });
+}
+
+function hintOf(en) { return en.split('').map((c, i) => i % 2 ? '·' : c).join(' '); }
+
+function render() {
+  setSteps();
+  locked = false;
+  const c = $('card');
+  c.classList.remove('anim'); void c.offsetWidth; c.classList.add('anim');
+  const w = WORDS[wi];
+  $('qTag').textContent = STAGES[stage].tag;
+  $('qFb').textContent = ''; $('qFb').className = 'fb';
+  $('qNext').disabled = true;
+  $('qOpts').innerHTML = ''; $('qOpts').classList.remove('hide');
+  $('qInput').classList.add('hide'); $('qInput').value = ''; $('qInput').className = 'spell-in hide';
+  $('qHint').classList.add('hide');
+  $('qZh').classList.add('hide');
+
+  if (stage === 0) {
+    $('qWord').textContent = w.en;
+    $('qZh').textContent = '选出正确的释义';
+    $('qZh').classList.remove('hide');
+    $('qProg').innerHTML = `WORD <b>${String(wi + 1).padStart(2, '0')}</b> / ${WORDS.length}`;
+    const opts = [w.zh, ...WORDS.filter(x => x !== w).map(x => x.zh).sort(() => Math.random() - .5).slice(0, 2)].sort(() => Math.random() - .5);
+    opts.forEach(t => {
+      const b = document.createElement('button');
+      b.className = 'opt'; b.innerHTML = `<span>${t}</span><span></span>`;
+      b.onclick = () => {
+        if (locked) return; locked = true; attempts++;
+        document.querySelectorAll('.opt').forEach(x => x.disabled = true);
+        if (t === w.zh) { b.classList.add('right'); b.lastChild.textContent = '✓'; rights++; $('qFb').textContent = '✓ 认得，第一站通过'; $('qFb').className = 'fb ok'; }
+        else {
+          b.classList.add('wrong'); b.lastChild.textContent = '✗';
+          [...document.querySelectorAll('.opt')].find(x => x.firstChild.textContent === w.zh).classList.add('right');
+          if (!wrongs.includes(w)) wrongs.push(w);
+          $('qFb').textContent = `✗ 意为「${w.zh}」，已进错题本`; $('qFb').className = 'fb bad';
+        }
+        $('qNext').disabled = false;
+      };
+      $('qOpts').appendChild(b);
+    });
+  } else if (stage === 1) {
+    $('qWord').textContent = w.zh;
+    $('qHint').textContent = 'HINT · ' + hintOf(w.en);
+    $('qHint').classList.remove('hide');
+    $('qProg').innerHTML = `WORD <b>${String(wi + 1).padStart(2, '0')}</b> / ${WORDS.length}`;
+    spellMode(w, '输入英文单词');
+  } else if (stage === 2) {
+    $('qWord').textContent = w.zh;
+    $('qProg').innerHTML = `WORD <b>${String(wi + 1).padStart(2, '0')}</b> / ${WORDS.length}`;
+    spellMode(w, '「' + w.zh + '」怎么写？');
+  } else {
+    if (!wrongs.length) { finish(); return; }
+    const rw = wrongs[wi % wrongs.length];
+    $('qWord').textContent = rw.zh;
+    $('qProg').innerHTML = `错题本还剩 <b>${wrongs.length}</b> 词`;
+    spellMode(rw, '再写一次，写对才移出', true);
+  }
+  $('qNext').textContent = stage === 3 ? '移出 / 下一个 →' : (wi === WORDS.length - 1 && stage < 3 ? '进下一站 →' : '下一个 →');
+  $('qNext').onclick = advance;
+}
+
+function spellMode(w, ph, isReview) {
+  $('qOpts').classList.add('hide');
+  const inp = $('qInput');
+  inp.classList.remove('hide'); inp.placeholder = ph;
+  setTimeout(() => inp.focus(), 60);
+  inp.onkeydown = e => { if (e.key === 'Enter' && !locked) submit(inp, w, isReview); };
+  $('qNext').disabled = false;
+  $('qNext').textContent = '提交答案';
+  $('qNext').onclick = () => { if (!locked) submit(inp, w, isReview); else advance(); };
+}
+
+function submit(inp, w, isReview) {
+  const v = inp.value.trim().toLowerCase();
+  if (!v) { inp.focus(); return; }
+  locked = true; attempts++;
+  if (v === w.en) {
+    inp.classList.add('ok'); rights++;
+    $('qFb').textContent = '✓ 写对了'; $('qFb').className = 'fb ok';
+    if (isReview) wrongs = wrongs.filter(x => x !== w);
+  } else {
+    inp.classList.add('bad');
+    if (!wrongs.includes(w)) wrongs.push(w);
+    $('qFb').textContent = `✗ 正确拼写：${w.en}`; $('qFb').className = 'fb bad';
+  }
+  $('qNext').textContent = stage === 3 ? '移出 / 下一个 →' : (wi === WORDS.length - 1 && stage < 3 ? '进下一站 →' : '下一个 →');
+  $('qNext').onclick = advance;
+}
+
+function advance() {
+  if (stage === 3) {
+    if (wrongs.length) { wi++; render(); return; }
+    finish(); return;
+  }
+  if (wi < WORDS.length - 1) { wi++; render(); }
+  else { stage++; wi = 0; render(); }
+}
+
+function finish() {
+  $('card').classList.add('hide');
+  document.querySelectorAll('#stepsBar div').forEach(d => d.className = 'fin');
+  $('doneBox').classList.remove('hide');
+  $('dNew').textContent = WORDS.length;
+  $('dWrong').textContent = wrongs.length;
+  $('dAcc').textContent = Math.round(rights / Math.max(attempts, 1) * 100) + '%';
+}
+
+$('signBtn').addEventListener('click', function () {
+  if (rec.last !== key) { rec.streak++; rec.last = key; localStorage.setItem('se_checkin', JSON.stringify(rec)); }
+  this.textContent = '✓ 已打卡'; this.disabled = true;
+  $('streakV').textContent = rec.streak;
+});
+
+document.getElementById('burger').onclick = () => document.getElementById('menu').classList.toggle('open');
+render();
+</script>
+</body>
+</html>

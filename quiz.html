@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>能力测评 · 自学英语</title>
+<style>
+:root{
+  --bg:#fafaf9;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--faint:#a8a29e;
+  --line:#e7e5e4;--line-2:#d6d3d1;--acc:#4f46e5;--acc-soft:#eef2ff;
+  --green:#059669;--green-soft:#ecfdf5;--rose:#e11d48;--rose-soft:#fff1f2;
+  --r:12px;--sh-sm:0 1px 2px rgba(28,25,23,.05);--sh-md:0 8px 24px rgba(28,25,23,.08);--sh-lg:0 20px 50px rgba(28,25,23,.12);
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --num:"SF Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;min-height:100vh;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+h1,h2,h3{letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:640px;margin:0 auto;padding:0 22px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:12px 24px;font-size:14.5px;font-weight:600;transition:.18s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{background:#292524}
+.btn-line{background:var(--card);color:var(--ink);border-color:var(--line-2)}.btn-line:hover{border-color:var(--ink)}
+.btn-ind{background:var(--acc);color:#fff}.btn-ind:hover{background:#4338ca}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-md)}
+
+/* 导航 */
+.nav{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:64px;background:rgba(250,250,249,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16.5px}
+.brand .mk{width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+.menu{display:flex;gap:6px}
+.menu a{padding:8px 14px;border-radius:8px;font-size:14px;color:var(--muted)}
+.menu a:hover{color:var(--ink);background:rgba(28,25,23,.05)}
+.menu a.cur{color:var(--ink);font-weight:600}
+.nav .btn{padding:9px 18px}
+.burger{display:none;border:1px solid var(--line-2);background:var(--card);border-radius:8px;font-size:16px;color:var(--ink);padding:6px 11px}
+@media(max-width:840px){
+  .menu{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:10px;box-shadow:var(--sh-md)}
+  .menu.open{display:flex}.menu a{padding:12px 16px;font-size:15px}.burger{display:block}
+  .nav .btn{display:none}
+}
+
+.page{padding:128px 0 80px}
+.q-card{padding:42px 44px}
+@media(max-width:600px){.q-card{padding:30px 22px}}
+
+/* 开始页 */
+.intro{text-align:center}
+.intro .seal{
+  width:56px;height:56px;border-radius:16px;background:var(--acc-soft);color:var(--acc);
+  display:grid;place-items:center;margin:0 auto 20px;
+}
+.intro h1{font-size:clamp(28px,4.6vw,40px);font-weight:800;line-height:1.22;margin-bottom:12px}
+.intro .sub{color:var(--muted);max-width:400px;margin:0 auto 34px;font-size:15.5px}
+.feat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:34px}
+.feat3 div{border:1px solid var(--line);border-radius:var(--r);padding:16px 10px;background:var(--bg)}
+.feat3 .v{font-size:20px;font-weight:800}
+.feat3 .v em{font-style:normal;font-size:12px;color:var(--muted);font-weight:500}
+.feat3 .k{font-size:12px;color:var(--muted);margin-top:2px}
+@media(max-width:560px){.feat3{grid-template-columns:1fr}}
+
+/* 答题 */
+#box.anim{animation:qIn .4s cubic-bezier(.2,.8,.3,1)}
+@keyframes qIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.prog{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.prog .bar{flex:1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog .bar b{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .4s cubic-bezier(.2,.8,.3,1)}
+.prog .num{font-size:12px;color:var(--muted);font-family:var(--num);white-space:nowrap}
+.q-tag{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:12px}
+.q-title{font-size:clamp(20px,3vw,25px);font-weight:700;margin-bottom:28px;line-height:1.5}
+.opts{display:grid;gap:10px}
+.opt{
+  text-align:left;background:var(--card);border:1.5px solid var(--line-2);border-radius:10px;
+  padding:15px 18px;font-size:15.5px;color:var(--ink);transition:.15s;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:500;
+}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--rose);background:var(--rose-soft);animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.spell-in{
+  width:100%;padding:16px 18px;font-size:19px;letter-spacing:.24em;font-family:var(--num);
+  border:1.5px solid var(--line-2);border-radius:10px;background:var(--card);color:var(--ink);outline:none;text-align:center;
+}
+.spell-in:focus{border-color:var(--acc)}
+.spell-in.ok{border-color:var(--green);background:var(--green-soft)}
+.spell-in.bad{border-color:var(--rose);background:var(--rose-soft);animation:shake .4s}
+.fb{margin-top:14px;font-size:13.5px;min-height:22px;text-align:center}
+.fb.ok{color:var(--green)}.fb.bad{color:var(--rose)}
+.q-foot{display:flex;justify-content:space-between;align-items:center;margin-top:28px}
+.timer{font-size:12.5px;color:var(--muted);font-family:var(--num)}
+.timer b{color:var(--ink);font-size:15px}
+
+/* 结果 */
+.result{text-align:center}
+.result .seal{
+  width:64px;height:64px;border-radius:18px;background:var(--green-soft);color:var(--green);
+  display:grid;place-items:center;margin:0 auto 22px;animation:pop .5s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.result .lvl{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:8px}
+.result .big{font-size:clamp(44px,8vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.result .big small{font-size:16px;color:var(--muted);font-weight:500;letter-spacing:0;margin-left:6px}
+.result h2{font-size:22px;font-weight:800;margin:10px 0 8px}
+.result .who{color:var(--muted);max-width:420px;margin:0 auto;font-size:14.5px}
+.bench{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:24px 0 28px}
+.bench span{font-size:11.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);background:var(--card)}
+.bench span.on{border-color:var(--acc);color:var(--acc);background:var(--acc-soft);font-weight:600}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat3 div{border:1px solid var(--line);border-radius:var(--r);padding:16px 8px;background:var(--bg)}
+.stat3 .v{font-size:21px;font-weight:800}
+.stat3 .v.hl{color:var(--acc)}
+.stat3 .k{font-size:11.5px;color:var(--muted);margin-top:2px}
+.review{text-align:left;border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin-bottom:26px;background:var(--bg)}
+.review h4{font-size:11.5px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.review .w{display:flex;justify-content:space-between;padding:7px 0;border-top:1px dashed var(--line);font-size:14px}
+.review .w:first-of-type{border-top:none}
+.review .w b{font-family:var(--num);font-weight:600}
+.review .w span{color:var(--muted)}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hide{display:none}
+
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;color:var(--faint);font-size:12.5px;background:var(--card)}
+</style>
+</head>
+<body>
+<div class="tint t1"></div><div class="tint t2"></div>
+
+<nav class="nav">
+  <a class="brand" href="index.html"><span class="mk">S</span>自学英语</a>
+  <div class="menu" id="menu">
+    <a href="quiz.html" class="cur">能力测评</a>
+    <a href="index.html#method">学习路径</a>
+    <a href="market.html">课程市集</a>
+    <a href="learn.html">每日学习</a>
+    <a href="index.html#edu">学校与机构</a>
+  </div>
+  <button class="burger" id="burger">☰</button>
+  <button class="btn btn-dark" onclick="location.href='learn.html'">开始今日学习</button>
+</nav>
+
+<main class="page">
+  <div class="wrap">
+
+    <!-- 开始 -->
+    <div class="card q-card intro" id="intro">
+      <div class="seal"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></div>
+      <span class="eyebrow">Vocabulary Assessment</span>
+      <h1 style="margin-top:10px">2 分钟测出你的词汇量</h1>
+      <p class="sub">8 道由易到难的题：估算词汇量，定位当前等级，自动匹配适合你的学习路径。</p>
+      <div class="feat3">
+        <div><div class="v">12.8<em> 万+</em></div><div class="k">人已测评</div></div>
+        <div><div class="v">2:04</div><div class="k">平均用时</div></div>
+        <div><div class="v">±8<em>%</em></div><div class="k">估算误差</div></div>
+      </div>
+      <button class="btn btn-ind" id="startBtn" style="padding:14px 36px">开始测评 →</button>
+    </div>
+
+    <!-- 答题 -->
+    <div class="card q-card hide" id="box">
+      <div class="prog">
+        <div class="bar"><b id="pBar" style="width:0%"></b></div>
+        <span class="num" id="pNum">01 / 08</span>
+      </div>
+      <div class="q-tag" id="qTag"></div>
+      <div class="q-title" id="qTitle"></div>
+      <div class="opts" id="qOpts"></div>
+      <input class="spell-in hide" id="qInput" autocomplete="off" spellcheck="false">
+      <div class="fb" id="qFb"></div>
+      <div class="q-foot">
+        <span class="timer">用时 <b id="timer">0</b> 秒</span>
+        <button class="btn btn-ind" id="nextBtn" disabled>下一题 →</button>
+      </div>
+    </div>
+
+    <!-- 结果 -->
+    <div class="card q-card result hide" id="resultBox">
+      <div class="seal"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="lvl" id="rLvl">LEVEL</div>
+      <div class="big" id="rVocab">0</div>
+      <h2 id="rName">—</h2>
+      <p class="who" id="rDesc"></p>
+      <div class="bench" id="rBench"></div>
+      <div class="stat3">
+        <div><div class="v" id="rAcc">0%</div><div class="k">答对率</div></div>
+        <div><div class="v" id="rSpeed">0s</div><div class="k">平均用时</div></div>
+        <div><div class="v hl" id="rBand">—</div><div class="k">建议起始带</div></div>
+      </div>
+      <div class="review hide" id="rReview">
+        <h4>建议优先掌握的词</h4>
+        <div id="rWords"></div>
+      </div>
+      <div class="btns">
+        <button class="btn btn-dark" onclick="location.href='learn.html'">按等级开始今日学习 →</button>
+        <button class="btn btn-line" id="retryBtn">再测一次</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>© 2026 自学英语 · 本页面为复刻演示</footer>
+
+<script>
+/* ---------- 题库 ---------- */
+const BANK = [
+  {type:'choice', tag:'Level 1 · 基础', title:'“effort” 的意思是？', opts:['努力','结果','借口'], a:0, en:'effort', zh:'努力'},
+  {type:'choice', tag:'Level 2 · 进阶', title:'“vivid” 的意思是？', opts:['模糊的','生动的','单调的'], a:1, en:'vivid', zh:'生动的'},
+  {type:'choice', tag:'Level 3 · 熟练', title:'“endeavor” 的意思是？', opts:['努力','娱乐','目的地'], a:0, en:'endeavor', zh:'努力'},
+  {type:'spell', tag:'Level 4 · 拼写', title:'拼写：/ˌendɪˈvɔː(r)/ 「努力」', en:'endeavor', zh:'努力'},
+  {type:'spell', tag:'Level 5 · 易错拼写', title:'易错拼写：/ˈhɒrɪzən/ 「地平线」', en:'horizon', zh:'地平线'},
+  {type:'spell', tag:'Level 6 · 易错拼写', title:'易错拼写：/ˈwɪzdəm/ 「智慧」', en:'wisdom', zh:'智慧'},
+  {type:'c2e', tag:'Level 7 · 汉译英', title:'「坚持」用英语怎么写？', en:'persevere', zh:'坚持'},
+  {type:'c2e', tag:'Level 8 · 汉译英', title:'「真诚的」用英语怎么写？', en:'sincere', zh:'真诚的'}
+];
+const LEVELS = [
+  {min:0, name:'入门阶段', band:'LV.1', vocab:1200, desc:'词汇基础正在搭建，建议从考纲核心词开始，每天 10 个，先建立正反馈。'},
+  {min:3, name:'进阶学习者', band:'LV.4', vocab:2600, desc:'常用词已过关，但在高频词拼写和复用上还有漏洞，适合从真题词汇包切入。'},
+  {min:6, name:'熟练学习者', band:'LV.7', vocab:4200, desc:'词汇量达到高考优秀线以上，建议进入长难句与写作替换词训练。'},
+  {min:8, name:'冲刺学习者', band:'LV.9', vocab:6000, desc:'接近大学六级水平，可直接挑战雅思 / 考研核心词带。'}
+];
+const BENCH = ['中考 1600','高考 3500','四级 4500','六级 6000','雅思 7000+'];
+
+let idx = 0, right = 0, wrongWords = [], qStart = 0, totalMs = 0, locked = false;
+const $ = id => document.getElementById(id);
+let sec = 0;
+setInterval(() => { if (!$('box').classList.contains('hide')) { sec++; $('timer').textContent = sec; } }, 1000);
+
+$('startBtn').onclick = () => { $('intro').classList.add('hide'); $('box').classList.remove('hide'); render(); };
+$('retryBtn').onclick = () => location.reload();
+$('burger').onclick = () => $('menu').classList.toggle('open');
+
+function render() {
+  const q = BANK[idx];
+  locked = false; qStart = performance.now();
+  const box = $('box');
+  box.classList.remove('anim'); void box.offsetWidth; box.classList.add('anim');
+  $('pBar').style.width = (idx / BANK.length * 100) + '%';
+  $('pNum').textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(BANK.length).padStart(2, '0');
+  $('qTag').textContent = q.tag;
+  $('qTitle').textContent = q.title;
+  $('qFb').textContent = ''; $('qFb').className = 'fb';
+  $('nextBtn').disabled = true;
+  $('qOpts').innerHTML = ''; $('qOpts').classList.remove('hide');
+  const inp = $('qInput'); inp.classList.add('hide'); inp.value = ''; inp.className = 'spell-in hide';
+
+  if (q.type === 'choice') {
+    ['A', 'B', 'C'].forEach((L, i) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.innerHTML = `<span>${L}&nbsp;&nbsp;${q.opts[i]}</span><span></span>`;
+      b.onclick = () => {
+        if (locked) return; locked = true; totalMs += performance.now() - qStart;
+        document.querySelectorAll('.opt').forEach(x => x.disabled = true);
+        if (i === q.a) { b.classList.add('right'); b.lastChild.textContent = '✓'; right++; }
+        else {
+          b.classList.add('wrong'); b.lastChild.textContent = '✗';
+          document.querySelectorAll('.opt')[q.a].classList.add('right');
+          wrongWords.push(q);
+          $('qFb').textContent = `正确答案：${q.opts[q.a]}（${q.en}）`; $('qFb').className = 'fb bad';
+        }
+        $('nextBtn').disabled = false;
+      };
+      $('qOpts').appendChild(b);
+    });
+  } else {
+    $('qOpts').classList.add('hide');
+    inp.classList.remove('hide');
+    inp.placeholder = q.type === 'spell' ? '输入你听到的单词' : '输入英文单词';
+    setTimeout(() => inp.focus(), 60);
+    inp.onkeydown = e => { if (e.key === 'Enter' && !locked) check(inp, q); };
+    $('nextBtn').disabled = false;
+    $('nextBtn').textContent = '提交答案';
+    $('nextBtn').onclick = () => { if (!locked) check(inp, q); else goNext(); };
+    return;
+  }
+  $('nextBtn').textContent = idx === BANK.length - 1 ? '查看结果 →' : '下一题 →';
+  $('nextBtn').onclick = goNext;
+}
+
+function check(inp, q) {
+  const v = inp.value.trim().toLowerCase();
+  if (!v) { inp.focus(); return; }
+  locked = true; totalMs += performance.now() - qStart;
+  if (v === q.en) { inp.classList.add('ok'); right++; }
+  else {
+    inp.classList.add('bad');
+    wrongWords.push(q);
+    $('qFb').textContent = `正确答案：${q.en}（${q.zh}）`; $('qFb').className = 'fb bad';
+  }
+  $('nextBtn').textContent = idx === BANK.length - 1 ? '查看结果 →' : '下一题 →';
+  $('nextBtn').onclick = goNext;
+}
+
+function goNext() { idx++; idx < BANK.length ? render() : showResult(); }
+
+function showResult() {
+  $('box').classList.add('hide');
+  $('resultBox').classList.remove('hide');
+  const lv = LEVELS.filter(l => right >= l.min).pop();
+  const acc = right / BANK.length;
+  const avg = Math.round(totalMs / BANK.length / 1000);
+  const vocab = Math.min(lv.vocab + right * 80 + (sec < 90 ? 200 : 0), 9000);
+
+  $('rLvl').textContent = lv.band + ' · ' + lv.name;
+  $('rName').textContent = lv.name;
+  $('rDesc').textContent = lv.desc;
+  $('rAcc').textContent = Math.round(acc * 100) + '%';
+  $('rSpeed').textContent = avg + 's';
+  $('rBand').textContent = lv.band;
+  $('rBench').innerHTML = BENCH.map((b, i) =>
+    `<span class="${vocab >= [1600,3500,4500,6000,7000][i] ? 'on' : ''}">${b}</span>`).join('');
+
+  const t0 = performance.now();
+  (function tick(t) {
+    const p = Math.min((t - t0) / 1300, 1), e = 1 - Math.pow(1 - p, 3);
+    $('rVocab').textContent = Math.round(vocab * e).toLocaleString();
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+
+  if (wrongWords.length) {
+    $('rReview').classList.remove('hide');
+    $('rWords').innerHTML = wrongWords.map(w => `<div class="w"><b>${w.en}</b><span>${w.zh}</span></div>`).join('');
+  }
+}
+</script>
+</body>
+</html>

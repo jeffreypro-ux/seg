@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程市集 · 自学英语</title>
+<style>
+:root{
+  --bg:#fafaf9;--card:#ffffff;--ink:#1c1917;--muted:#78716c;--faint:#a8a29e;
+  --line:#e7e5e4;--line-2:#d6d3d1;--acc:#4f46e5;--acc-soft:#eef2ff;
+  --green:#059669;--green-soft:#ecfdf5;
+  --r:12px;--sh-sm:0 1px 2px rgba(28,25,23,.05);--sh-md:0 8px 24px rgba(28,25,23,.08);
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --num:"SF Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}
+h1,h2,h3{letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.h2{font-size:clamp(26px,3.6vw,38px);font-weight:700;line-height:1.25}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;transition:.18s}
+.btn:hover{transform:translateY(-1px)}
+.btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{background:#292524}
+.btn-line{background:var(--card);color:var(--ink);border-color:var(--line-2)}.btn-line:hover{border-color:var(--ink)}
+.btn-ind{background:var(--acc);color:#fff}.btn-ind:hover{background:#4338ca}
+.btn.done{background:var(--green-soft);color:var(--green);border-color:#a7f3d0}
+.btn.done:hover{border-color:var(--green)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-sm)}
+
+/* 导航 */
+.nav{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:64px;background:rgba(250,250,249,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16.5px}
+.brand .mk{width:30px;height:30px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800}
+.menu{display:flex;gap:6px}
+.menu a{padding:8px 14px;border-radius:8px;font-size:14px;color:var(--muted)}
+.menu a:hover{color:var(--ink);background:rgba(28,25,23,.05)}
+.menu a.cur{color:var(--ink);font-weight:600}
+.nav .btn{padding:9px 18px}
+.burger{display:none;border:1px solid var(--line-2);background:var(--card);border-radius:8px;font-size:16px;color:var(--ink);padding:6px 11px}
+@media(max-width:840px){
+  .menu{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:10px;box-shadow:var(--sh-md)}
+  .menu.open{display:flex}.menu a{padding:12px 16px;font-size:15px}.burger{display:block}
+  .nav .btn{display:none}
+}
+
+/* 头部 */
+.head{padding:140px 0 26px}
+.head h1{margin-top:12px}
+.head .lead{margin-top:12px}
+
+/* 工具条 */
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:30px 0 36px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{
+  padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;
+  background:var(--card);border:1px solid var(--line-2);color:var(--muted);transition:.15s;
+}
+.tab:hover{border-color:var(--ink);color:var(--ink)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.search{margin-left:auto;position:relative}
+.search input{
+  padding:10px 16px 10px 38px;border-radius:10px;border:1px solid var(--line-2);
+  background:var(--card);font-size:14px;width:250px;outline:none;font-family:inherit;color:var(--ink);
+}
+.search input:focus{border-color:var(--acc)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint)}
+@media(max-width:720px){.search{margin-left:0;width:100%}.search input{width:100%}}
+
+/* 课程卡 */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:80px}
+.course{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;
+  display:flex;flex-direction:column;box-shadow:var(--sh-sm);
+  transition:box-shadow .22s,transform .22s,border-color .22s;animation:qIn .35s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes qIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.course:hover{box-shadow:var(--sh-md);transform:translateY(-3px);border-color:var(--line-2)}
+.course .t{display:flex;justify-content:space-between;align-items:center}
+.course .tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+.course .lvl{font-size:11px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.course h3{font-size:17px;font-weight:700;margin:12px 0 5px}
+.course p{font-size:13.5px;color:var(--muted);flex:1}
+.course .meta{display:flex;gap:14px;margin-top:18px;padding-top:13px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);font-family:var(--num)}
+.course .meta b{color:var(--ink);font-weight:600}
+.course .row2{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+.course .st{font-size:11.5px;color:var(--muted);font-family:var(--num)}
+.course .st b{color:var(--acc)}
+.course .btn{padding:8px 16px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;color:var(--faint);padding:64px 0;font-size:13.5px;font-family:var(--num);letter-spacing:.1em}
+@media(max-width:920px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;color:var(--faint);font-size:12.5px;background:var(--card)}
+</style>
+</head>
+<body>
+<div class="tint t1"></div><div class="tint t2"></div>
+
+<nav class="nav">
+  <a class="brand" href="index.html"><span class="mk">S</span>自学英语</a>
+  <div class="menu" id="menu">
+    <a href="quiz.html">能力测评</a>
+    <a href="index.html#method">学习路径</a>
+    <a href="market.html" class="cur">课程市集</a>
+    <a href="learn.html">每日学习</a>
+    <a href="index.html#edu">学校与机构</a>
+  </div>
+  <button class="burger" id="burger">☰</button>
+  <button class="btn btn-dark" onclick="location.href='learn.html'">开始今日学习</button>
+</nav>
+
+<header class="head">
+  <div class="wrap">
+    <span class="eyebrow">Course Market</span>
+    <h1 class="h2">从考纲词汇，到整套真题</h1>
+    <p class="lead">40 余套课程包，按内容分成六类。加入后进度一直保留，随时回来接着学。</p>
+    <div class="toolbar">
+      <div class="tabs" id="tabs"></div>
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input id="kw" placeholder="搜索课程，如：完形 / 3500">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>© 2026 自学英语 · 本页面为复刻演示</footer>
+
+<script>
+const CATS = ['全部','考纲词汇','真题训练','长难句','完形填空','听力口语','写作'];
+const COURSES = [
+  {c:'考纲词汇', n:'高考考纲 3500 词', d:'按考频排序，先背最常考的。四站循环，直到每个词都站站通过。', l:'高中', k:48, tm:'约 4 个月', p:128400},
+  {c:'考纲词汇', n:'中考考纲 1600 词', d:'初中核心词全覆盖，配真题例句，基础薄弱也能轻松起步。', l:'初中', k:30, tm:'约 3 个月', p:86200},
+  {c:'考纲词汇', n:'四级高频 800 词', d:'从真题里筛出的最高频 800 词，考前突击首选。', l:'大学', k:16, tm:'约 6 周', p:45200},
+  {c:'真题训练', n:'十年真题词汇', d:'考过什么就学什么。每词标注出现年份与频次，不做无用功。', l:'高中', k:32, tm:'约 3 个月', p:64100},
+  {c:'真题训练', n:'阅读理解同义替换', d:'选项里的同义替换词一网打尽，阅读不再二选一靠猜。', l:'高中', k:20, tm:'约 5 周', p:23800},
+  {c:'真题训练', n:'完形真题精练 40 篇', d:'每篇配高频词复盘，做题与背单词同步进行。', l:'高中', k:40, tm:'约 8 周', p:31500},
+  {c:'长难句', n:'长难句拆解 30 讲', d:'每天一句真题长难句，划主干、拆从句，阅读肉眼可见地涨。', l:'高中', k:30, tm:'约 1 个月', p:52400},
+  {c:'长难句', n:'语法弱点回炉 12 讲', d:'定语从句、非谓语……哪里不会补哪里。', l:'通用', k:12, tm:'约 2 周', p:18700},
+  {c:'完形填空', n:'完形高频词', d:'完形选项里最爱考的一词多义和近义词辨析，集中突破。', l:'高中', k:24, tm:'约 3 周', p:59600},
+  {c:'完形填空', n:'近义词辨析 300 组', d:'affect / effect / influence，300 组易混词成对记忆。', l:'高中', k:18, tm:'约 2 周', p:21300},
+  {c:'听力口语', n:'听力场景词', d:'校园、旅行、购物……按场景记单词，听音反应速度翻倍。', l:'通用', k:20, tm:'约 2 周', p:44800},
+  {c:'听力口语', n:'口语万能句型 200', d:'200 个脱口而出就能用的句型，含发音示范。', l:'通用', k:10, tm:'约 2 周', p:39100},
+  {c:'写作', n:'写作高级替换词', d:'good → remarkable，把作文里的低级词系统性升级一档。', l:'高中', k:16, tm:'约 2 周', p:50200},
+  {c:'写作', n:'读后续写语料库', d:'动作、情绪、环境描写三大类语料，续写不再词穷。', l:'高中', k:22, tm:'约 3 周', p:27600}
+];
+
+let cur = '全部';
+const joined = new Set(JSON.parse(localStorage.getItem('se_joined') || '[]'));
+
+const tabs = document.getElementById('tabs');
+CATS.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'tab' + (c === cur ? ' on' : '');
+  b.textContent = c;
+  b.onclick = () => { cur = c; document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.textContent === c)); render(); };
+  tabs.appendChild(b);
+});
+
+function render() {
+  const kw = document.getElementById('kw').value.trim();
+  const list = COURSES.filter(x =>
+    (cur === '全部' || x.c === cur) &&
+    (!kw || x.n.includes(kw) || x.d.includes(kw) || x.c.includes(kw))
+  );
+  const g = document.getElementById('grid');
+  if (!list.length) { g.innerHTML = '<div class="empty">NO RESULT · 换个关键词试试</div>'; return; }
+  g.innerHTML = list.map(x => {
+    const id = COURSES.indexOf(x);
+    const inb = joined.has(id);
+    return `<div class="course" style="animation-delay:${list.indexOf(x) * 40}ms">
+      <div class="t"><span class="tag">${x.c}</span><span class="lvl">${x.l}</span></div>
+      <h3>${x.n}</h3>
+      <p>${x.d}</p>
+      <div class="meta"><span>${x.k} 课</span><b>${x.tm}</b><span>${(x.p + (inb ? 1 : 0)).toLocaleString()} 人在学</span></div>
+      <div class="row2">
+        <span class="st">${inb ? '已加入 · <b>第 1 课</b>' : '进度保留'}</span>
+        <button class="btn ${inb ? 'done' : 'line'}" data-id="${id}">${inb ? '✓ 已加入' : '+ 加入'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  g.querySelectorAll('button[data-id]').forEach(b => b.onclick = () => toggle(+b.dataset.id));
+}
+
+function toggle(id) {
+  joined.has(id) ? joined.delete(id) : joined.add(id);
+  localStorage.setItem('se_joined', JSON.stringify([...joined]));
+  render();
+}
+
+document.getElementById('kw').addEventListener('input', render);
+document.getElementById('burger').onclick = () => document.getElementById('menu').classList.toggle('open');
+render();
+</script>
+</body>
+</html>
